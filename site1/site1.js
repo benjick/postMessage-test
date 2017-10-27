@@ -6,19 +6,20 @@ const data = {
   array: [1, 2, 3, 4],
 };
 
-let ref;
+let iframe;
+const code = document.querySelector('#code');
 
 document.querySelector('#postMessage').addEventListener('click', () => {
-  ref = window.open(target, 'myWindow');
-  if (ref) {
-    setTimeout(() => {
-      ref.postMessage(data, '*');
-    }, 500);
-  }
+  code.innerHTML = '';
+  iframe = document.querySelector('#iframe');
+  iframe.onload = () => {
+    iframe.contentWindow.postMessage(data, '*');
+  };
+  iframe.src = target;
 });
 
 window.addEventListener('message', event => {
   const text = JSON.stringify(event.data, null, 4);
-  document.querySelector('#code').innerHTML = text;
-  ref.close();
+  code.innerHTML = text;
+  iframe.src = '';
 });
